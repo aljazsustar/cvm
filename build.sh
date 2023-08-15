@@ -30,8 +30,8 @@ build_c() {
         fi 
     done
 
-    gcc "$C_FLAGS" -o main src/main.c $(find build -type f | xargs echo)
-    mv main build
+    gcc "$C_FLAGS" -o main src/main.c $(find build/obj -type f | xargs echo)
+    mv main build/main
 }
 
 build_java() {
@@ -77,4 +77,3 @@ then
         build
     fi
 fi
-

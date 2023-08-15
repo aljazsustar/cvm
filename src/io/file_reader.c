@@ -8,6 +8,8 @@ byte* BUF;
 unsigned int buf_cursor = 0;
 FILE* file;
 
+file_info* info;
+
 void get_file(const char* path) {
 
     file = fopen(path, "rb");
@@ -32,6 +34,7 @@ file_info read_file(const char* path) {
     res->size = size;
     res->path = path;
     
+    info = res;
     file_info val = *res;
     free(res);
 
@@ -43,20 +46,12 @@ void update_buffer() {
     fread(BUF, 1, BUF_SIZE, file);
 }
 
-void read_n_bytes(int n, unsigned char* dest) {
+byte* read_n_bytes(int n) {
 
-    buf_cursor += n;
+    byte* res = (byte*)malloc(sizeof(byte));
+    memcpy(&res[info->cursor], info->content, n);
 
-    if (buf_cursor >= BUF_SIZE) {
-        int remaining = BUF_SIZE - (buf_cursor - n);
-        printf("Remaining: %d\n", remaining);
-        memcpy(dest, &BUF[buf_cursor], remaining);
-        update_buffer();
-        printf("Left to copy: %d\n", n - remaining);
-        printf("Buf cursor: %d\n", buf_cursor);
-        memcpy(&dest[remaining],BUF, n - remaining);
-        buf_cursor += n - remaining;
-    } else {
-        memcpy(dest, &BUF[buf_cursor], n);
-    }
+    info->cursor += n;
+
+    return res;
 }
